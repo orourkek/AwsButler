@@ -7,17 +7,8 @@ from terminal import Table
 import collections
 import os
 import datetime
-
 import json
 import ConfigParser
-
-class Account:
-
-	alias = ''
-	_key = None
-	_priv_key = None
-	_ssh_key_file = None
-
 
 
 class AwsController(controller.CementBaseController):
