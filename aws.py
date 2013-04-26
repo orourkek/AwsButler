@@ -58,7 +58,7 @@ class AwsController(controller.CementBaseController):
 
 	@controller.expose(help="default command for aws", hide=True)
 	def default(self):
-		print 'aws default()'
+		print 'Use the help flag [-h|--help] to view available commands and flags\n'
 
 
 	@controller.expose(help="shows active AWS instances and other useful status information")
@@ -71,6 +71,7 @@ class AwsController(controller.CementBaseController):
 		for c, i in instances.items():
 			table.add_row((c, i.id, i.tags.get("Name", ""), i.instance_type, i.dns_name, i.image_id, i._state))
 		print table
+		return
 
 	def instances_verbose(self):
 		cprint('This could take a few moments, be patient...', 'yellow', attrs=['bold'])
@@ -99,6 +100,7 @@ class AwsController(controller.CementBaseController):
 			#print cpu_utilization = .query(metric_start, metric_end, 'Average', 'Percent')
 			table.add_row((c, i.id, i.tags.get("Name", ""), i.instance_type, load_balancer, i.placement, i.dns_name, i.image_id, i._state, cpu_utilization))
 		print table
+		return
 
 
 	@controller.expose(help="connect to an AWS instance")
@@ -138,7 +140,7 @@ class AwsController(controller.CementBaseController):
 			terminal_osa_script = 'tell application "Terminal" to do script "%s"' % ssh_command;
 
 		os.system("osascript -e '%s'" % terminal_osa_script)
-
+		return
 
 	@controller.expose(help="information about load balancer(s)")
 	def elb(self):
@@ -164,6 +166,7 @@ class AwsController(controller.CementBaseController):
 					label = 'Instances: '
 				print '%15s %-100.100s' % (label, '%s (%s)' % (inst.id, state))
 			print ''
+		return
 
 
 	def _fetch_load_balancers(self):
