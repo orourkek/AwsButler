@@ -109,7 +109,7 @@ class Table:
 	def _verify_column_widths(self, data):
 		c = 0
 		for item in data:
-			if (len(str(item)) + 3) > self.column_sizes[c]:
+			if (len(str(item))) > self.column_sizes[c]:
 				self.column_sizes[c] = len(str(item))
 			c += 1
 
