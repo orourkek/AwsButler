@@ -9,17 +9,19 @@ import os
 import datetime
 import json
 import ConfigParser
+import subprocess
 
 
 class AwsController(controller.CementBaseController):
 
-	acct_info = {}
+	_acct_info = {}
+	_config_loaded = False
 	_instances_cache = None 	#not fully implemented yet
 
 	class Meta:
-		label = 'base'
+		label = 'aws'
 		interface = controller.IController
-		stacked_on = 'None'
+		stacked_on = 'base'
 		description = "Various AWS operations/commands"
 		arguments = [
 			(['-a', '--account'], dict(action='store', help='which account to run commands on (see config.json)', dest='account')),
@@ -31,6 +33,9 @@ class AwsController(controller.CementBaseController):
 		self._load_config()
 
 	def _load_config(self):
+		if self._config_loaded:
+			return
+		self._config_loaded = True
 		config_file = self.app.config.get('awsinfo', 'config_file')
 		default_acct = None
 		try:
@@ -43,7 +48,7 @@ class AwsController(controller.CementBaseController):
 					account['ssh_key']
 					account['aws_keys']['secret']
 					account['aws_keys']['key']
-					self.acct_info = account
+					self._acct_info = account
 					return
 		except IOError as e:
 			exit("failed to load config file: %s" % e)
@@ -78,7 +83,7 @@ class AwsController(controller.CementBaseController):
 		instances = self._fetch_instances()
 		elbs = self._fetch_load_balancers()
 		print 'fetching cloudwatch metrics...'
-		creds = self.acct_info['aws_keys']
+		creds = self._acct_info['aws_keys']
 		cloudwatch_conn = boto.connect_cloudwatch(aws_access_key_id=creds["key"], aws_secret_access_key=creds["secret"])
 		metric_end = datetime.datetime.now()
 		metric_start = metric_end - datetime.timedelta(hours=1)
@@ -121,25 +126,7 @@ class AwsController(controller.CementBaseController):
 					print '\n'
 					exit()
 				cprint('invalid input. please enter a UID from the above table', 'red')
-
-		ssh_key = self.acct_info['ssh_key']
-		ssh_command = 'ssh -i %s root@%s' % (ssh_key, target_instance.public_dns_name)
-
-		if os.path.exists('/Applications/iTerm.app'):
-			terminal_osa_script = """tell application "iTerm"
-						make new terminal
-						tell the current terminal
-							activate current session
-							launch session "Default Session"
-							tell the last session
-								write text "%s"
-							end tell
-						end tell
-					end tell"""  % ssh_command
-		else:
-			terminal_osa_script = 'tell application "Terminal" to do script "%s"' % ssh_command;
-
-		os.system("osascript -e '%s'" % terminal_osa_script)
+		self._run_ssh_connect(target_instance.public_dns_name)
 		return
 
 	@controller.expose(help="information about load balancer(s)")
@@ -168,17 +155,42 @@ class AwsController(controller.CementBaseController):
 			print ''
 		return
 
+	def _run_ssh_connect(self, dns, new_window=False):
+		self._load_config()
+		ssh_key = self._acct_info['ssh_key']
+		if new_window:
+			ssh_command = 'ssh -i %s root@%s' % (ssh_key, dns)
+			if os.path.exists('/Applications/iTerm.app'):
+				terminal_osa_script = """tell application "iTerm"
+							make new terminal
+							tell the current terminal
+								activate current session
+								launch session "Default Session"
+								tell the last session
+									write text "%s"
+								end tell
+							end tell
+						end tell"""  % ssh_command
+			else:
+				terminal_osa_script = 'tell application "Terminal" to do script "%s"' % ssh_command;
+			return os.system("osascript -e '%s'" % terminal_osa_script)
+		else:
+			ssh_command = ['ssh', '-t', '-i', ssh_key, 'root@%s' % dns]
+			#return subprocess.Popen(ssh_command)
+			return os.system(' '.join(ssh_command))
 
 	def _fetch_load_balancers(self):
-		creds = self.acct_info['aws_keys']
+		self._load_config()
+		creds = self._acct_info['aws_keys']
 		print 'fetching load balancer data...'
 		conn = boto.connect_elb(aws_access_key_id=creds["key"], aws_secret_access_key=creds["secret"])
 		return conn.get_all_load_balancers()
 
 
 	def _fetch_instances(self):
+		self._load_config()
 		print 'fetching instance data...'
-		creds = self.acct_info['aws_keys']
+		creds = self._acct_info['aws_keys']
 		conn = EC2Connection(aws_access_key_id=creds["key"], aws_secret_access_key=creds["secret"])
 		instance_list = [i for r in conn.get_all_instances() for i in r.instances]
 		instances = collections.OrderedDict()
