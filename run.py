@@ -2,7 +2,6 @@
 
 from cement.core import foundation, handler, backend, controller
 from aws import AwsController
-from app import AwsInfoApp, BaseController
 from termcolor import cprint
 import os
 
