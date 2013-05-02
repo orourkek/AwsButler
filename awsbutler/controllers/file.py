@@ -78,7 +78,7 @@ class FileController(BaseController):
 		print instances
 		print Color.yellow('\nWhich instance do you want to interact with? (Enter a UID from above)', bold=True)
 
-		while true:
+		while True:
 			try:
 				inp = raw_input(" > ")
 				if inp in ('^C', 'exit', 'exit()', 'q', 'quit'):
