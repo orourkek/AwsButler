@@ -1,5 +1,7 @@
-config.json
-
+awsbutler.cfg
+build/
+dist/
+AwsButler.egg-info/
 
 # Compiled source #
 ###################
@@ -52,7 +54,6 @@ dist
 build
 eggs
 parts
-bin
 var
 sdist
 develop-eggs

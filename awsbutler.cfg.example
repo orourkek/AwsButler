@@ -1,0 +1,14 @@
+{
+	"accounts" : [
+		{
+			"alias" : "some_alias",
+			"default": 1, 	//optionally specify as the default acct
+			"ssh_key" : "/absolute/path/to/key.pem",
+			"ssh_user" : "someuser",
+			"aws_keys" : {
+				"key": "key_string",
+				"secret": "secret_key_string"
+			}
+		}
+	]
+}

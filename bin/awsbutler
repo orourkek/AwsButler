@@ -1,0 +1,18 @@
+#!/usr/bin/python
+
+def main():
+	try:
+		from awsbutler.core.appmain import AwsButler
+		app = AwsButler()
+		try:
+			app.setup()
+			app.run()
+		finally:
+			app.close()
+	except KeyboardInterrupt :
+		print ""
+		sys.exit()
+
+if __name__ == "__main__" :
+    main()
+
