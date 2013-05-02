@@ -38,7 +38,7 @@ My job necessitates a certain awareness of the happenings within a small cluster
 
 First, grab a copy off the code:
 
-	git clone https://github.com/orourkek/Awsinfo.git
+	git clone https://github.com/orourkek/AwsButler.git
 
 Run the setup script in **develop** mode:
 

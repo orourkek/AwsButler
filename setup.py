@@ -19,7 +19,7 @@ setup(
     scripts=['bin/awsbutler'],
     license='LICENSE',
     description='Command line tools for AWS cloud management & status information',
-    long_description=open('README.txt').read(),
+    long_description=open('README.md').read(),
     install_requires=[
         "cement == 2.0.2",
         "boto == 2.9.2",
