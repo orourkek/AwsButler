@@ -8,7 +8,8 @@
 			"aws_keys" : {
 				"key": "key_string",
 				"secret": "secret_key_string"
-			}
+			},
+			"svn_directory" : "/var/www/html"
 		}
 	]
 }

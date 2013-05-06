@@ -1,16 +1,16 @@
 from cement.core import controller, exc
 from awsbutler.core import aws
-from awsbutler.core.controller import BaseController
+from awsbutler.core.controller import InstanceInteractionController
 from awsbutler.helpers.terminal import Color
 import os
 from os.path import expanduser, isdir, basename
 
 
-class FileController(BaseController):
+class FileOpsController(InstanceInteractionController):
 	class Meta:
-		label = 'file'
+		label = 'fileops'
 		interface = controller.IController
-		stacked_on = 'base'
+		stacked_on = None
 		description = "Remote file operations"
 		arguments = [
 			(['-f', '--file'], dict(action='store', help='which file to interact with', dest='filename', default='/var/log/httpd/php_error.log')),
@@ -26,17 +26,10 @@ class FileController(BaseController):
 		instance = self.app.pargs.instance
 		filename = self.app.pargs.filename
 		lines = self.app.pargs.lines
-		#path = self.app.pargs.path
 
 		file_path = filename #'%s/%s' % (path, filename)
 
-		client = aws.Client(self.app.AWS_ACCOUNT)
-		instances = client.instances()
-
-		if instance is not None and int(instance) in instances:
-			target_instance = instances[int(instance)]
-		else:
-			target_instance = self._instance_prompt(instances)
+		target_instance = self._instance_prompt()
 
 		dns = target_instance.public_dns_name
 		print "fetching the last %s lines of '%s' from %s..." % (lines, file_path, dns)
@@ -74,22 +67,6 @@ class FileController(BaseController):
 		return os.system('%s > %s' % (download_command, local_target))
 
 
-	def _instance_prompt(self, instances):
-		print instances
-		print Color.yellow('\nWhich instance do you want to interact with? (Enter a UID from above)', bold=True)
 
-		while True:
-			try:
-				inp = raw_input(" > ")
-				if inp in ('^C', 'exit', 'exit()', 'q', 'quit'):
-					return
-			except Exception as e:
-				if isinstance(e, exc.CaughtSignal):
-					print '\n'
-					exit()
-			try:
-				return instances[int(inp)]
-			except KeyError:
-				print Color.red('invalid input. please enter a UID from the above table')
 
 

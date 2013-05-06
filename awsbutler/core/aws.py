@@ -9,7 +9,7 @@ import datetime
 
 class Account:
 
-	CREDS = {}
+	DATA = {}
 
 	def __init__(self, config_data):
 		try:
@@ -20,19 +20,25 @@ class Account:
 		except KeyError as e:
 			print Color.red('incomplete account configuration. missing key %s' % e, bold=True)
 			exit()
-		self.CREDS = config_data
+		self.DATA = config_data
 
 	def key(self):
-		return self.CREDS['aws_keys']['key']
+		return self.DATA['aws_keys']['key']
 
 	def secret_key(self):
-		return self.CREDS['aws_keys']['secret']
+		return self.DATA['aws_keys']['secret']
 
 	def ssh_pem(self):
-		return self.CREDS['ssh_key']
+		return self.DATA['ssh_key']
 
 	def ssh_user(self):
-		return self.CREDS['ssh_user']
+		return self.DATA['ssh_user']
+
+	def svn_dir(self):
+		try:
+			return self.DATA['svn_directory']
+		except:
+			return False
 
 
 

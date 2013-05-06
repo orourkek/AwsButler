@@ -1,8 +1,10 @@
 from cement.core import handler
 from awsbutler.controllers.aws import AwsController
-from awsbutler.controllers.file import FileController
+from awsbutler.controllers.fileops import FileOpsController
+from awsbutler.controllers.vcs import SvnController
 
 def load():
 	handler.register(AwsController)
-	handler.register(FileController)
+	handler.register(FileOpsController)
+	handler.register(SvnController)
 	return
