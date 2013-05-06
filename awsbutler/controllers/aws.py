@@ -6,7 +6,7 @@ from collections import Iterable
 
 
 
-class EC2Controller(BaseController):
+class AwsController(BaseController):
 	class Meta:
 		label = 'status'
 		interface = controller.IController

@@ -1,4 +1,4 @@
-from cement.core import controller
+from cement.core import controller, exc
 from awsbutler.core import aws
 from awsbutler.core.controller import BaseController
 from awsbutler.helpers.terminal import Color
@@ -10,7 +10,7 @@ class FileController(BaseController):
 	class Meta:
 		label = 'file'
 		interface = controller.IController
-		stacked_on = None
+		stacked_on = 'base'
 		description = "Remote file operations"
 		arguments = [
 			(['-f', '--file'], dict(action='store', help='which file to interact with', dest='filename', default='/var/log/httpd/php_error.log')),
