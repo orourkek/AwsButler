@@ -8,6 +8,7 @@ class SvnController(InstanceInteractionController):
 		label = 'vcs'
 		interface = controller.IController
 		stacked_on = None
+		description = "VCS management commands"
 		arguments = [
 			(['-i', '--instance'], dict(action='store', help='which instance to interact with from', dest='instance'))
 		]
