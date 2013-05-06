@@ -1,6 +1,8 @@
 AwsButler
 =========
 
+***Note: this is an experimental application. I offer no guarantees and/or promises about functionality, performance, security, or reliability. It's intended as a learning experiment, so many of the tools are first tailored for my working environment. Feel free to offer suggestions/comments if you have any.***
+
 ## Author
 
 Kevin O'Rourke
@@ -71,9 +73,11 @@ A few basic comands are currently supported:
 	awsbutler instances [-v]
 	awsbutler connect
 	awsbutler elb
-	awsbutler file
-	awsbutler file tail
-	awsbutler file download
+	awsbutler fileops
+	awsbutler fileops tail
+	awsbutler fileops download
+	awsbutler vcs update
+	awsbutler vcs status
 
 To see a full list of available commands, along with help text and available flags/options, run:
 
