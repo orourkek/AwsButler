@@ -21,6 +21,8 @@ class Account:
 			print Color.red('incomplete account configuration. missing key %s' % e, bold=True)
 			exit()
 		self.DATA = config_data
+		if not self.DATA['ssh_port']:
+			self.DATA['ssh_port'] = "22"
 
 	def key(self):
 		return self.DATA['aws_keys']['key']
@@ -33,6 +35,9 @@ class Account:
 
 	def ssh_user(self):
 		return self.DATA['ssh_user']
+
+	def ssh_port(self):
+		return self.DATA['ssh_port']
 
 	def svn_dir(self):
 		try:
@@ -108,7 +113,8 @@ class Client:
 		dns = self.INSTANCES[instance].public_dns_name
 		print Color.green('connecting you to %s...' % dns, bold=True)
 		if new_window:
-			ssh_command = 'ssh -i %s %s@%s' % (self.ACCOUNT.ssh_pem(), self.ACCOUNT.ssh_user(), dns)
+			ssh_command = 'ssh -p %s -i %s %s@%s' % (self.ACCOUNT.ssh_port(), self.ACCOUNT.ssh_pem(), self.ACCOUNT.ssh_user(), dns)
+			print Color.white(ssh_command)
 			if os.path.exists('/Applications/iTerm.app'):
 				terminal_osa_script = """tell application "iTerm"
 							make new terminal
@@ -124,7 +130,8 @@ class Client:
 				terminal_osa_script = 'tell application "Terminal" to do script "%s"' % ssh_command;
 			return os.system("osascript -e '%s'" % terminal_osa_script)
 		else:
-			ssh_command = ['ssh', '-t', '-i', self.ACCOUNT.ssh_pem(), 'root@%s' % dns]
+			ssh_command = ['ssh', '-p', self.ACCOUNT.ssh_port(), '-t', '-i', self.ACCOUNT.ssh_pem(), '%s@%s' % (self.ACCOUNT.ssh_user(), dns)]
+			print Color.white('ssh -p %s -i %s %s@%s' % (self.ACCOUNT.ssh_port(), self.ACCOUNT.ssh_pem(), self.ACCOUNT.ssh_user(), dns))
 			#return subprocess.Popen(ssh_command)
 			return os.system(' '.join(ssh_command))
 
