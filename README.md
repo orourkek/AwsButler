@@ -53,6 +53,7 @@ At this point you should have a `awsbutler` file in `/usr/local/bin`, and the ex
 + **alias** - an alias/shorthand for the account, used when running commands on it
 + **default [optional]** - assign this a value of '1' for the account to be loaded as the default, when no account is specified
 + **ssh_key** - the absolute path to the .pem ssh key file for connecting to instances
++ **ssh_port [optional]** - specify a non-standard ssh port
 + **aws_keys**
   - **key** - a public key string provided by amazon for your AWS account
   - **secret** - a secret key string provided by amazon for your AWS account
